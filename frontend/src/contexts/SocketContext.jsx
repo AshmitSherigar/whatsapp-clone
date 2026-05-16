@@ -14,7 +14,7 @@ export const SocketProvider = ({ children }) => {
     socketRef.current = new WebSocket("ws://localhost:5000");
 
     socketRef.current.onopen = () => {
-      console.log("✅ socket connected");
+      console.log("Socket connected");
 
       socketRef.current.send(
         JSON.stringify({
@@ -23,7 +23,7 @@ export const SocketProvider = ({ children }) => {
         }),
       );
 
-      setIsConnected(true); 
+      setIsConnected(true);
     };
 
     return () => {

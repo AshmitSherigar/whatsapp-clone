@@ -20,7 +20,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const url = "http://localhost:5000/login";
+    const url = "http://localhost:5000/api/auth/login";
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const register = async (username, password) => {
-    const url = "http://localhost:5000/register";
+    const url = "http://localhost:5000/api/auth/register";
     try {
       const response = await fetch(url, {
         method: "POST",

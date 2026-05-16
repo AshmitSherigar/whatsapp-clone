@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useMessageInfo } from "../hooks/useMessageInfo";
+import { formatMessage, getCurrentDate } from "../helpers/utils";
 
 const Sidebar = ({ sendReciever }) => {
   const [allUsers, setAllUsers] = useState([]);
@@ -10,26 +11,35 @@ const Sidebar = ({ sendReciever }) => {
   const [searchUser, setSearchUser] = useState("");
   const [lastMessage, setLastMessage] = useState([]);
 
-  const { user, logout } = useAuth();
-  const { onlineUsers } = useMessageInfo();
+  const { user, logout, token } = useAuth();
 
   const handleToolTipClick = () => {
     setShowToolTip(!showTooltip);
-    // logout();
   };
 
+  // removes the current user to display
   const filteredUsers = allUsers.filter((allUser, index) => {
     return allUser.username !== user.username;
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("http://localhost:5000/api/message/users", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setAllUsers(data));
   }, []);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/conversations/${user.userId}`)
+    fetch(`http://localhost:5000/api/message/conversations`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setLastMessage(data);
@@ -44,35 +54,8 @@ const Sidebar = ({ sendReciever }) => {
     setSearchUser(e.target.value);
   };
 
-  const getCurrentDate = (time) => {
-    const messageDate = new Date(time);
-
-    const today = new Date();
-
-    const isToday = messageDate.toDateString() === today.toDateString();
-
-    if (isToday) {
-      const hours = String(messageDate.getHours()).padStart(2, "0");
-      const minutes = String(messageDate.getMinutes()).padStart(2, "0");
-      const timeString = `${hours}:${minutes}`;
-      return timeString;
-    }
-
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-    const isYesterday = messageDate.toDateString() === yesterday.toDateString();
-
-    if (isYesterday) return "Yesterday";
-
-    return messageDate.toLocaleDateString();
-  };
-
-  const formatMessage = (message) => {
-    if (message.length < 22) return message;
-    else return message.slice(0, 22) + "...";
-  };
   return (
-    <div className="w-100 bg-[#161717]  border-r border-l border-gray-600">
+    <div className="w-130 bg-[#161717]  border-r border-l border-gray-600">
       <div className="flex items-center justify-between px-2 py-4">
         <div className="text-white text-3xl">Whatsapp</div>
         <div
@@ -120,8 +103,6 @@ const Sidebar = ({ sendReciever }) => {
         />
       </div>
       {filteredUsers.map((filteredUser) => {
-        const isOnline = onlineUsers?.includes(filteredUser._id);
-
         // for each filtered user this checks the last message and finds the first message with their id in sender or reciever
 
         const message = lastMessage.find((msg) => {
@@ -136,20 +117,32 @@ const Sidebar = ({ sendReciever }) => {
             key={filteredUser._id}
             className={`${
               filteredUser === selectedUser ? "bg-[#3a3e3e]" : "bg-[#242626]"
-            } w-full border border-white text-white flex items-center justify-between gap-1 px-5 h-20 rounded-sm`}
+            } m-2 text-white flex items-center justify-between gap-1 px-5 h-20 rounded-xl hover:bg-[#3a3e3e]`}
             onClick={() => handleClick(filteredUser)}
           >
-            <div className="">
-              <div className="flex items-center justify-center h-8   w-8   bg-gray-300 rounded-full" />
-
-              <div className="capitalize">{filteredUser.username}</div>
+            <div className="flex gap-3">
+              <div className="flex items-center justify-center h-10 w-10 bg-gray-300 rounded-full" />
+              <div className="text-white flex flex-col">
+                <div className="capitalize text-xl">
+                  {filteredUser.username}
+                </div>
+                <p className="text-sm">
+                  {message ? formatMessage(message.text) : ""}
+                </p>
+              </div>
             </div>
-            <div className="text-sm opacity-70 text-white">
-              {message ? formatMessage(message.text) : ""}
-            </div>
-            <div className="text-[10px] ">{getCurrentDate(message?.time)}</div>
-            {isOnline && (
-              <div className=" h-2 w-2 bg-green-500 rounded-full border border-black" />
+            {/* Need to fix the invalid date option for first time chat */}
+            {message?.text ? (
+              <div className="flex flex-col items-center justify-center gap-2">
+                <div className="text-[10px] ">
+                  {getCurrentDate(message?.time)}
+                </div>
+                <div className=" h-5 w-5 bg-green-500 rounded-full border border-black">
+                  <p className="text-xs flex items-center justify-center">1</p>
+                </div>
+              </div>
+            ) : (
+              <></>
             )}
           </div>
         );

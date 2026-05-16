@@ -18,19 +18,12 @@ export const MessageProvider = ({ children }) => {
     const socket = socketRef.current;
 
     if (!socket) {
-      console.log("❌ socket not available yet");
+      console.log("Socket not available yet");
       return;
     }
-
-    console.log("✅ attaching onmessage");
     socket.onmessage = (event) => {
-      console.log("🔥 RAW:", event.data);
-
       const incomingMessage = JSON.parse(event.data);
       const recieverId = currentChatUser?._id;
-
-      console.log("incoming:", incomingMessage);
-      console.log("receiver:", recieverId);
 
       switch (incomingMessage.type) {
         case "online_users":

@@ -7,6 +7,7 @@ import { useMessageInfo } from "../hooks/useMessageInfo";
 
 // Needs to update the message in sidebar
 // Needs to update the seen ticks realtime when the chat is open also
+// Needs to have loading screen and also loading bar and spinner
 
 const Chat = () => {
   const [input, setInput] = useState("");
@@ -26,7 +27,6 @@ const Chat = () => {
     setCurrentChatUser,
     currentChatUser,
   } = useMessageInfo();
-  console.log(messageArray);
 
   const recieverRef = useRef();
 
@@ -131,6 +131,7 @@ const Chat = () => {
       setmessageArray([]);
     }
   }, [currentChatUser]);
+
   const handleCloseChat = () => {
     setShowTooltip(false);
     setCurrentChatUser(null);
@@ -142,9 +143,10 @@ const Chat = () => {
     <div className="h-screen flex">
       <Sidebar sendReciever={handleRecieverFromSidebar} />
       <div className="flex flex-col w-full">
+        {/* Need to change this approach and display some other feature when there is a blank chat */}
         {reciever && (
           <div
-            className="flex items-center justify-between px-10 w-full h-15 bg-[#161717] text-white border border-white
+            className="flex items-center justify-between px-10 w-full h-15 bg-[#161717] text-white 
           "
           >
             <div className="flex items-center justify-center gap-5">
@@ -197,7 +199,7 @@ const Chat = () => {
 
         <div
           ref={messageContainerRef}
-          className="flex-1 overflow-y-scroll bg-[#161717]"
+          className="flex-1 overflow-y-scroll bg-[#161717f8]"
         >
           {messageArray.map((element, idx) => {
             const currentDate = getDateLabel(element.time);
@@ -211,7 +213,7 @@ const Chat = () => {
               <>
                 {/* Display date for each group of messages */}
                 {showDate && (
-                  <div className="text-center text-gray-400 my-2 text-xs">
+                  <div className="text-center text-gray-300 my-3 text-xs">
                     {currentDate}
                   </div>
                 )}
@@ -228,13 +230,6 @@ const Chat = () => {
                     <div
                       className={`${element.senderId != user.userId ? "bg-[#242626]" : "bg-[#144D37]"} p-2 my-0.5 rounded-lg min-w-40 max-w-150 flex flex-col text-white`}
                     >
-                      {/* Username */}
-                      {/* <div
-                        className={`text-xs font-semibold mb-1 ${element.senderId != user.userId ? "text-left" : "text-right"}`}
-                      >
-                        {element.username}
-                      </div> */}
-
                       {/* Text */}
                       <div className="text-sm">{element.text}</div>
 
@@ -281,13 +276,13 @@ const Chat = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="1.5"
+                                strokeWidth="1.5"
                                 stroke="currentColor"
-                                class="size-3"
+                                className="size-3"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   d="m4.5 12.75 6 6 9-13.5"
                                 />
                               </svg>
