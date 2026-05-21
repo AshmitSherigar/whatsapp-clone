@@ -5,7 +5,9 @@ import { NavLink } from "react-router";
 const TopBar = ({ isLoginVisible }) => {
   return (
     <div className="bg-[#FCF5EB] h-15 flex items-center justify-between px-10">
-      <NavLink to={"/"} className="text-4xl">Whatsapp</NavLink>
+      <NavLink to={"/"} className="text-4xl">
+        Whatsapp
+      </NavLink>
       {isLoginVisible && (
         <div className="flex">
           <NavLink

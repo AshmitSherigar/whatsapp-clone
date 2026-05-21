@@ -43,6 +43,6 @@ export const getCurrentDate = (time) => {
 };
 
 export const formatMessage = (message) => {
-  if (message.length < 22) return message;
-  else return message.slice(0, 22) + "...";
+  if (message.length < 30) return message;
+  else return message.slice(0, 30) + "...";
 };

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useMessageInfo } from "../hooks/useMessageInfo";
 import { formatMessage, getCurrentDate } from "../helpers/utils";
+import { RxCross2 } from "react-icons/rx";
 
 const Sidebar = ({ sendReciever }) => {
   const [allUsers, setAllUsers] = useState([]);
@@ -12,6 +13,7 @@ const Sidebar = ({ sendReciever }) => {
   const [lastMessage, setLastMessage] = useState([]);
 
   const { user, logout, token } = useAuth();
+  const { messageArray } = useMessageInfo();
 
   const handleToolTipClick = () => {
     setShowToolTip(!showTooltip);
@@ -44,7 +46,7 @@ const Sidebar = ({ sendReciever }) => {
       .then((data) => {
         setLastMessage(data);
       });
-  }, [user]);
+  }, [user, messageArray]);
 
   const handleClick = (user) => {
     setSelectedUser(user);
@@ -77,21 +79,10 @@ const Sidebar = ({ sendReciever }) => {
             Logout
           </div>
         </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="white"
+        <RxCross2
           onClick={handleToolTipClick}
-          className={`size-7 rounded-full hover:bg-[#353636] ${showTooltip ? "rotate-45" : "rotate-0"}`}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
+          className={`text-white size-7 rounded-full hover:bg-[#353636] ${showTooltip ? "rotate-45" : "rotate-0"}`}
+        />
       </div>
       <div>
         <input

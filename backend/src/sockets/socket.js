@@ -89,7 +89,6 @@ const setupWebSocket = (server) => {
           },
           { status: "seen" },
         );
-        console.log("update the message: " + JSON.stringify(mes));
         // notify the sender
         wss.clients.forEach((client) => {
           if (client.user && client.user.userId == senderId) {

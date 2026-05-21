@@ -4,8 +4,9 @@ import Sidebar from "./Sidebar";
 import { getCurrentTime, getDateLabel } from "../helpers/utils";
 import { useSocket } from "../hooks/useSocket";
 import { useMessageInfo } from "../hooks/useMessageInfo";
+import { TiTick } from "react-icons/ti";
+import { RxHamburgerMenu } from "react-icons/rx";
 
-// Needs to update the message in sidebar
 // Needs to update the seen ticks realtime when the chat is open also
 // Needs to have loading screen and also loading bar and spinner
 
@@ -26,6 +27,7 @@ const Chat = () => {
     setmessageArray,
     setCurrentChatUser,
     currentChatUser,
+    onlineUsers,
   } = useMessageInfo();
 
   const recieverRef = useRef();
@@ -154,8 +156,12 @@ const Chat = () => {
               <div className=" h-10 w-10 bg-gray-300 rounded-full" />
               <div className="flex flex-col items-center justify-center ">
                 <h1 className="uppercase">{reciever.username}</h1>
-                {typing && (
-                  <div className="text-xs text-gray-200">typing...</div>
+                {reciever && onlineUsers.includes(reciever?._id) ? (
+                  <div className="flex items-start w-11 text-xs text-gray-200">
+                    {typing ? <>typing...</> : <>online</>}
+                  </div>
+                ) : (
+                  <></>
                 )}
               </div>
             </div>
@@ -179,20 +185,7 @@ const Chat = () => {
               </div>
             </div>
             <div onClick={() => setShowTooltip((prev) => !prev)}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
-              </svg>
+              <RxHamburgerMenu className="size-5"/>
             </div>
           </div>
         )}
@@ -241,51 +234,12 @@ const Chat = () => {
                         {element.senderId === user.userId && (
                           <span>
                             {element.status === "seen" ? (
-                              <div className="flex">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="1.5"
-                                  stroke="currentColor"
-                                  class="size-3"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m4.5 12.75 6 6 9-13.5"
-                                  />
-                                </svg>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="1.5"
-                                  stroke="currentColor"
-                                  class="size-3"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m4.5 12.75 6 6 9-13.5"
-                                  />
-                                </svg>
+                              <div className="flex -space-x-3">
+                                <TiTick />
+                                <TiTick />
                               </div>
                             ) : (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="size-3"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="m4.5 12.75 6 6 9-13.5"
-                                />
-                              </svg>
+                              <TiTick />
                             )}
                           </span>
                         )}

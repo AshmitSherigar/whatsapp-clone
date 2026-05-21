@@ -4,8 +4,6 @@ const secret = process.env.JWT_SECRET_KEY;
 const authMiddleware = (req, res, next) => {
   try {
     const jwt_token = req.headers.authorization || req.headers.Authorization;
-    console.log(jwt_token);
-
     if (!jwt_token || !jwt_token.startsWith("Bearer ")) {
       return res
         .status(401)
