@@ -7,7 +7,7 @@ export const MessageContext = createContext();
 export const MessageProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [messageArray, setmessageArray] = useState([]);
-  const [typing, setTyping] = useState(false);
+  const [typingInfo, setTypingInfo] = useState({ whoIsTypingId: null, typing: false });
   const [currentChatUser, setCurrentChatUser] = useState(null);
 
   const { socketRef, isConnected } = useSocket();
@@ -31,11 +31,13 @@ export const MessageProvider = ({ children }) => {
           break;
 
         case "typing":
-          setTyping(true);
+          console.log(incomingMessage);
+
+          setTypingInfo({ whoIsTypingId: incomingMessage.from, typing: true });
           break;
 
         case "stop_typing":
-          setTyping(false);
+          setTypingInfo({ whoIsTypingId: incomingMessage.from, typing: false });
           break;
 
         case "seen_update":
@@ -59,7 +61,7 @@ export const MessageProvider = ({ children }) => {
   return (
     <MessageContext.Provider
       value={{
-        typing,
+        typingInfo,
         onlineUsers,
         messageArray,
         setmessageArray,

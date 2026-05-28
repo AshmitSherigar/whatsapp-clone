@@ -116,7 +116,6 @@ const setupWebSocket = (server) => {
         // Creating messages
 
         const savedMessage = await saveMessage(conversationId, finalMessage);
-        console.log("savedMessage:", savedMessage);
 
         const onlineList = Array.from(onlineUsers.keys());
 

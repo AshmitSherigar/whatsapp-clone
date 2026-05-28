@@ -4,16 +4,19 @@ import { useAuth } from "../hooks/useAuth";
 import { useMessageInfo } from "../hooks/useMessageInfo";
 import { formatMessage, getCurrentDate } from "../helpers/utils";
 import { RxCross2 } from "react-icons/rx";
+import { TiTick } from "react-icons/ti";
 
 const Sidebar = ({ sendReciever }) => {
   const [allUsers, setAllUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
   const [showTooltip, setShowToolTip] = useState(false);
   const [searchUser, setSearchUser] = useState("");
   const [lastMessage, setLastMessage] = useState([]);
 
   const { user, logout, token } = useAuth();
-  const { messageArray } = useMessageInfo();
+  const { messageArray, typingInfo } = useMessageInfo();
+
+  console.log(messageArray);
 
   const handleToolTipClick = () => {
     setShowToolTip(!showTooltip);
@@ -102,6 +105,9 @@ const Sidebar = ({ sendReciever }) => {
             msg.recieverId === filteredUser._id
           );
         });
+        const isMessageMine = message?.recieverId === filteredUser?._id;
+
+        console.log(message?.status);
 
         return (
           <div
@@ -118,7 +124,26 @@ const Sidebar = ({ sendReciever }) => {
                   {filteredUser.username}
                 </div>
                 <p className="text-sm">
-                  {message ? formatMessage(message.text) : ""}
+                  {typingInfo?.typing &&
+                  typingInfo?.whoIsTypingId === filteredUser._id ? (
+                    <span className="text-green-500">typing...</span>
+                  ) : message ? (
+                    isMessageMine ? (
+                      <span className="flex items-center">
+                        {message?.status === "seen" ? (
+                          <div className="flex -space-x-2.5">
+                            <TiTick />
+                            <TiTick />
+                          </div>
+                        ) : (
+                          <TiTick />
+                        )}{" "}
+                        {formatMessage(message.text)}
+                      </span>
+                    ) : (
+                      <span>{formatMessage(message.text)}</span>
+                    )
+                  ) : null}
                 </p>
               </div>
             </div>

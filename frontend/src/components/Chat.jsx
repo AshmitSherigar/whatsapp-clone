@@ -8,6 +8,7 @@ import { TiTick } from "react-icons/ti";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 // Needs to update the seen ticks realtime when the chat is open also
+// And also the message number in sidebar
 // Needs to have loading screen and also loading bar and spinner
 
 const Chat = () => {
@@ -22,7 +23,7 @@ const Chat = () => {
   const { socketRef } = useSocket();
   const { token, user } = useAuth();
   const {
-    typing,
+    typingInfo,
     messageArray,
     setmessageArray,
     setCurrentChatUser,
@@ -67,6 +68,14 @@ const Chat = () => {
   }, [reciever]);
 
   useEffect(() => {
+    if (!reciever?._id) return;
+
+    const recieverId = reciever?._id;
+    sendIfOpen({
+      type: "seen",
+      senderId: recieverId,
+    });
+
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
@@ -158,7 +167,12 @@ const Chat = () => {
                 <h1 className="uppercase">{reciever.username}</h1>
                 {reciever && onlineUsers.includes(reciever?._id) ? (
                   <div className="flex items-start w-11 text-xs text-gray-200">
-                    {typing ? <>typing...</> : <>online</>}
+                    {typingInfo.typing &&
+                    typingInfo?.whoIsTypingId === recieverRef.current?._id ? (
+                      <>typing...</>
+                    ) : (
+                      <>online</>
+                    )}
                   </div>
                 ) : (
                   <></>
@@ -185,7 +199,7 @@ const Chat = () => {
               </div>
             </div>
             <div onClick={() => setShowTooltip((prev) => !prev)}>
-              <RxHamburgerMenu className="size-5"/>
+              <RxHamburgerMenu className="size-5" />
             </div>
           </div>
         )}
